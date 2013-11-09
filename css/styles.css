@@ -1,0 +1,80 @@
+body{
+	background:#E6E6E6;
+	font-family:Helvetica, Arial, sans-serif;
+	padding: 0 10px;
+	line-height:1.6;
+
+}
+
+li,h2,h3,h1,h4,h5,p,span{
+	font-family:Helvetica, Arial, sans-serif;
+}
+
+a{
+	font-family:Helvetica, Arial, sans-serif;
+	color: #ec5158;
+}
+p {
+	margin: 0;
+}
+.wrap {
+	width: 980px;
+	margin: 0 auto;
+}
+h1 {
+	text-align: center;
+	font-size: 36px;
+}
+h1 img {
+	width: 50%;
+	max-width: 600px;
+}
+h2{
+	font-size:28px;
+	color:#4a4a4a;
+	font-family:Helvetica, Arial, sans-serif;
+	margin:0;
+	text-align:center;
+	font-weight: bold;
+}
+
+.tweet, .error {
+	background: #FFF;
+	padding: 20px 50px;
+	overflow: auto;
+	margin: 10px 0;
+	font-size: 18px;
+}
+.tweet span {
+	color: #000;
+}
+.error {
+	background: #ec5158;
+}
+img {
+	max-width: 150px;
+	height: auto;
+}
+.profile {
+	display: block;
+	margin: 0 20px 0 0;
+	float: left;
+	width: 48px;
+	height: 48px;
+}
+.entities {
+	margin: 10px;
+	float: left;
+}
+@media screen and (max-width: 800px) {
+	.wrap {
+		width: 100%;
+		margin: 0;
+	}
+	.profile {
+		margin: 0 10px 10px 0;
+	}
+	.tweet {
+		padding: 20px;
+	}
+}
