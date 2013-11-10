@@ -19,7 +19,7 @@ function process($id) {
 	$url = 'https://api.twitter.com/1.1/search/tweets.json';
 
 	// Search for this query
-	$q = urlencode('yolandaph OR rescueph OR haiyan'); //
+	$q = urlencode('rescueph OR tracingph'); //
 	// Do a recent search and include entities
 	$getfield = '?q='.$q.'&result_type=recent&include_entities=true'; //&count=100&since_id='' since_id should be the last result returned
 	// If there's an ID passed append it to the query. This is used to only get the latest results.
