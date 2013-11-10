@@ -75,7 +75,7 @@ function process($id) {
 				// Check to see that if a timezone is set it resides in the Philippines
 				if(empty($stat->utc_offset) || abs($stat->utc_offset) == 28800) {
 					// Run everything through one final test
-					$censor = preg_match('/#?followback|image|photo|missuniverse|donate|donation|tracing\ request|rt\:|news|lol|http/i', $stat->text);
+					$censor = preg_match('/followback|image|photo|missuniverse|donate|donation|tracing\ request|rt\:|news|lol|http/i', $stat->text);
 					if($censor < 1) {
 						$final[] = $stat;
 					}
