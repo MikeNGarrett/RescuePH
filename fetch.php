@@ -29,6 +29,7 @@ if(!file_exists($last)) {
 		// Double check time (may not be needed
 		if($check_last < time() + 1800) {
 			print_r(process($since_id));
+			die;
 		}
 	}
 
@@ -36,15 +37,16 @@ if(!file_exists($last)) {
 	$cache_file = 'cache.txt';
 	$cache = file_get_contents($cache_file) or die('Cannot open file:  '.$cache_file);
 
-	if(count($cache) < 1) {
+
+
+	if(strlen($cache) < 10) {
 		$archive = 'archive.txt';
 		if(file_exists($archive)) {
 			$cache = file_get_contents($archive) or die('Cannot open file:  '.$archive);
-			$cache = json_decode($cache);
-			$cache = krsort($cache);
-			$cache = json_encode($cache);
 		}
 	}
+
+
 	print_r($cache);
 
 }

@@ -15,7 +15,7 @@
 			doConnect(0);
 			window.setInterval(doConnect, 30000);
 			window.setInterval(displayTweet, 1000);
-			$('#load-more').click(function(e){
+			$('#load').click(function(e){
 				e.preventDefault();
 				getArchives();
 			});
@@ -29,7 +29,7 @@
 				<h2>Searching for RescurPH, YolandaPH, or Haiyan.</h2>
 			</div>
 			<div id="results"></div>
-			<div id="load-more"><a href="#">Load More</a></div>
+			<div id="load"><a href="#">Load Archives</a></div>
 		</div>
 	</body>
 </html>
