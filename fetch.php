@@ -1,67 +1,55 @@
 <?php
 /*
- * Grab twitter info and send it back via json
+ *  Check to see if a new request needs to be made, else return the cache.
  */
 
-require_once('TwitterAPIExchange.php');
-
-$settings = array(
-    'oauth_access_token' => "3974551-SpSe5fmk1SDpxkznb2Ct5BVf4p60hlXGQo1aSS3m9a",
-    'oauth_access_token_secret' => "QsDCfKhiWvrqZYJ2XFL2QiUm7duqOppFZjAsUdjxFJdjG",
-    'consumer_key' => "RH4lVgwonrYUFc8kJrmtDQ",
-    'consumer_secret' => "h12noEtloq1ReRnWi7rfBDgoMevHcccRcyVe8sqeuw"
-);
-$url = 'https://api.twitter.com/1.1/search/tweets.json';
-
-// Search for this query
-$q = urlencode('yolandaph OR rescueph OR haiyan');
-// Do a recent search and include entities
-$getfield = '?q='.$q.'&result_type=recent&include_entities=true'; //&count=100&since_id='' since_id should be the last result returned
-// If there's an ID passed append it to the query. This is used to only get the latest results.
-if($_GET['id'] && $_GET['id'] > 0) {
-	$getfield .= '&since_id='.$_GET['id'];
+// Make sure this is only being accessed via AJAX
+if(empty($_GET['ajax'])) {
+	print 'nope';
+	return false;
 }
-$requestMethod = 'GET';
 
-$twitter = new TwitterAPIExchange($settings);
-$response = $twitter->setGetfield($getfield)
-                    ->buildOauth($url, $requestMethod)
-                    ->performRequest();
-
-$response = json_decode($response);
-$final = array();
-
-foreach($response->statuses as $key => $stat) {
-	// kick out any results that are retweets, PSAs or less than 15 characters (usually people tweeting the hashtag)
-	if(!isset($stat->retweeted_status) && !isset($stat->in_reply_to_status_id) && count($stat->text) < 15 && count($stat->entities->urls) < 1 ) {
-		// Check to see that if a timezone is set it resides in the Philippines
-		if(empty($stat->utc_offset) || abs($stat->utc_offset) == 28800) {
-			// Run everything through one final test
-			if(!array_strpos($stat->text)) {
-				$final[] = $stat;
-			}
+require_once('process.php');
+$since_id = 0;
+// Get the id passed from our app if it exists. This will be passed to regerate the cache.
+if($_GET['id'] && $_GET['id'] > 0) {
+	$since_id = $_GET['id'];
+}
+$last = 'last_request.txt';
+if(!file_exists($last)) {
+	touch($last);
+	chmod($last, 0664);
+	file_put_contents($last, time() + 1800, LOCK_EX);
+	print_r(process($since_id));
+} else {
+	// Check last time requested
+	$last_time = filemtime($last);
+	if($last_time < time() + 1800) {
+		$check_last = file_get_contents($last) or die('Cannot open file:  '.$last);
+		// Double check time (may not be needed
+		if($check_last < time() + 1800) {
+			print_r(process($since_id));
 		}
 	}
+
+	// Go get cache since you're not allowed to fetch yet.
+	$cache_file = 'cache.txt';
+	$cache = file_get_contents($cache_file) or die('Cannot open file:  '.$cache_file);
+
+	if(count($cache) < 1) {
+		$archive = 'archive.txt';
+		if(file_exists($archive)) {
+			$cache = file_get_contents($archive) or die('Cannot open file:  '.$archive);
+			$cache = json_decode($cache);
+			$cache = krsort($cache);
+			$cache = json_encode($cache);
+		}
+	}
+	print_r($cache);
+
 }
-$response->statuses = $final;
-$response = json_encode($response);
 
-/*
-print '<pre>';
-print_r( json_decode($response) );
-print '</pre>';
-*/
 
-print_r($response);
 
-function array_strpos($haystack) {
-	$haystack = strtolower($haystack);
-	$needles = array('followback','image','photo','missuniverse','donate','donation','tracing request','rt:','news','lol');
-    foreach($needles as $needle) {
-        if(strpos($haystack, $needle) !== false) {
-	        return true;
-        }
-    }
-    return false;
-}
+
 ?>
