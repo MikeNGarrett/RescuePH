@@ -87,6 +87,10 @@ function process($id) {
 	if(count($final) > 0 ) {
 		$response->statuses = $final;
 		$response = json_encode($response);
+		// Had problems with cache file sometimes being blank
+		if(filesize($cache) < 1) {
+			unlink($cache);
+		}
 		file_put_contents($cache, $response, LOCK_EX);
 	} else {
 		$response = json_encode($response);
