@@ -35,8 +35,12 @@ if(!file_exists($last)) {
 
 	// Go get cache since you're not allowed to fetch yet.
 	$cache_file = 'cache.txt';
-	$cache = file_get_contents($cache_file) or die('Cannot open file:  '.$cache_file);
-
+	// Had problems with cache file sometimes being blank
+	if(filesize($cache) < 1) {
+		unlink($cache);
+	} else {
+		$cache = file_get_contents($cache_file) or die('Cannot open file:  '.$cache_file);
+	}
 
 
 	if(strlen($cache) < 10) {

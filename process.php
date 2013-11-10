@@ -46,20 +46,26 @@ function process($id) {
 			chmod($cache, 0664);
 			$old = array();
 		} else {
-			$old = file_get_contents($cache) or die('Cannot open file:  '.$cache);
-			$old = json_decode($old);
-			$archive = 'archive.txt';
-			if(!file_exists($archive)) {
-				touch($archive);
-				chmod($archive, 0664);
+			// Had problems with cache file sometimes being blank
+			if(filesize($cache) < 1) {
+				unlink($cache);
+				$old = array();
 			} else {
-				$old_archive = file_get_contents($archive);
-				$old_archive = json_decode($old_archive);
-				$merged = array_merge($old_archive->statuses, $old->statuses);
-				$old->statuses = $merged;
+				$old = file_get_contents($cache) or die('Cannot open file:  '.$cache);
+				$old = json_decode($old);
+				$archive = 'archive.txt';
+				if(!file_exists($archive)) {
+					touch($archive);
+					chmod($archive, 0664);
+				} else {
+					$old_archive = file_get_contents($archive);
+					$old_archive = json_decode($old_archive);
+					$merged = array_merge($old_archive->statuses, $old->statuses);
+					$old->statuses = $merged;
+				}
+				$old = json_encode($old);
+				file_put_contents($archive, $old);
 			}
-			$old = json_encode($old);
-			file_put_contents($archive, $old);
 
 		}
 
