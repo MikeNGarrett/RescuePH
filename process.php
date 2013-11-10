@@ -82,11 +82,6 @@ function process($id) {
 				}
 			}
 		}
-		/*
-		print '<pre>';
-		print_r( json_decode($response) );
-		print '</pre>';
-		*/
 
 	} // end check for errors
 
